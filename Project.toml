@@ -1,0 +1,7 @@
+name = "Veronese"
+uuid = "a30fc8ab-12d5-475b-a63c-ab837d9bfc2c"
+
+[deps]
+JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
