@@ -1,6 +1,6 @@
 using Test
 using Veronese
-using LinearAlgebra: I
+using LinearAlgebra: I, norm, svd
 
 @testset verbose = true begin
     @testset "annihilate_subspace" begin
@@ -52,7 +52,7 @@ using LinearAlgebra: I
 
         @test size(V, 2) == k * binomial(d + 1, 2)
         @test size(Vc, 2) == binomial(n + 1, 2) - k * binomial(d + 1, 2)
-        @test norm(Vc' * veronese(subspaces[:, :, 1])) ≈ 0 atol = 1e-15
+        @test norm(Vc' * veronese(subspaces[:, :, 1])) ≈ 0 atol = 1e-14
     end
 
     @testset "incidence_relations" begin
