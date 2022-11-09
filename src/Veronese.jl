@@ -18,7 +18,7 @@ export random_coordinates,
 #
 # Computing veronese rank of subspace arrangements.
 #
-export subspace_arrangement, incidence_relations, vhs_identifiable
+export subspace_arrangement, incidence_relations, vhs_identifiable, generate_summand
 
 function subspace_arrangement(n, k, d)
     subspaces = zeros(n, d, k)
@@ -54,7 +54,7 @@ end
 
 function generate_summand(subspaces, V, Vc, r)
     n, d, k = size(subspaces)
-    sample = subspaces[:, :, rand(1:k)] * random_subspace(d, 1)
+    sample = (@view subspaces[:, :, rand(1:k)]) * random_subspace(d, 1)
     incident = veronese(coordinate_observation(sample, random_coordinates(n, r)))
     W, Wc = complement_subspace(incident)
     relations = incidence_relations(W, Wc, V, Vc)
@@ -70,9 +70,14 @@ function vhs_identifiable(n, k, d, r; verbose = false)
 
     N, tensorized_dim = size(V)
     dof = tensorized_dim * (N - tensorized_dim)
+    if dof == 0
+        println("0 dimensional")
+        return true
+    end
 
     dof_per = N - tensorized_dim - binomial(n - r + 2, 2) + 1
     if dof_per <= 0
+        println("incident subspaces too large")
         return false
     end
 
@@ -85,11 +90,12 @@ function vhs_identifiable(n, k, d, r; verbose = false)
     var = zeros(dof, dof)
 
     i = 0
-    while i < ceil(dof * 5 / dof_per)
+    limit = ceil(dof * 5 / dof_per)
+    while i < limit
         i += 1
         var += generate_summand(subspaces, V, Vc, r)
 
-        if mod(i, 10) == 0
+        if mod(i, 10) == 0 || i == limit
             c = cond(var)
             if verbose
                 println("    $i: $c")
